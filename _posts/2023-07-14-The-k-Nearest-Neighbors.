@@ -3,4 +3,224 @@ layout: post
 title: The k-Nearest Neighbors (kNN)
 ---
 
-a
+# Introducción
+
+¡Bienvenidos al segundo post de nuestra serie sobre algoritmos de aprendizaje automático! En esta ocasión, vamos a sumergirnos en el fascinante mundo del algoritmo de clasificación K-Nearest Neighbors (KNN). Si estás buscando una forma intuitiva y efectiva de clasificar datos, estás en el lugar correcto. En este post, exploraremos los conceptos básicos de KNN y cómo se utiliza para realizar clasificaciones basadas en los vecinos más cercanos. Prepárate para descubrir una técnica poderosa y sencilla de entender. ¡Comencemos!
+
+# Indice
+
+1. Idea Intuitiva
+2. Explicación de kNN
+3. Código 'from scratch'
+4. Código con 'scikit-learn'
+
+# Idea Intuitiva
+
+Imagina que tienes una lista de animales, como perros, gatos y conejos. Cada animal tiene diferentes características, como su tamaño, color y sonido que hacen. Ahora, quieres saber a qué tipo de animal pertenece uno nuevo que encontraste, pero no estás seguro.
+
+Aquí es donde entra en juego el algoritmo kNN. KNN significa "vecino más cercano". El concepto es simple: miras a los animales que ya conoces y buscas a los más similares al nuevo animal que encontraste.
+
+Vamos a usar el tamaño y el color como características para clasificar a los animales. Imagina que el nuevo animal es pequeño y de color marrón. Para clasificarlo, observamos los animales que ya conocemos y buscamos los más similares en términos de tamaño y color.
+
+Digamos que encontramos los tres animales más cercanos al nuevo animal. Resulta que dos de ellos son conejos y uno es un gato. Ahora, basándonos en los animales similares, podemos decir que es muy probable que el nuevo animal también sea un conejo.
+
+El algoritmo kNN usa la idea de buscar a los vecinos más cercanos para tomar decisiones. En este caso, los vecinos son los animales que son más similares al nuevo animal. Al observar a los vecinos cercanos, podemos tomar una decisión sobre qué tipo de animal es el nuevo.
+
+Recuerda, el valor de "k" en kNN es el número de vecinos que miramos. En nuestro ejemplo, usamos k=3, lo que significa que buscamos a los tres animales más cercanos. Puedes ajustar el valor de "k" dependiendo de cuántos vecinos desees considerar.
+
+Así es como funciona el algoritmo kNN utilizando animales como ejemplo. ¡Es una forma divertida y sencilla de clasificar cosas basándonos en las características similares!
+
+# Explicación de kNN
+
+A continuación, vamos a dar algunas características sobre kNN para posteriormente, explicar en detalle el funcionamiento de este algoritmo:
+
+## kNN es un algoritmo supervisado de aprendizaje automático.
+
+La primera propiedad determinante de los algoritmos de aprendizaje automático es la distinción entre modelos supervisados y no supervisados. La diferencia entre modelos supervisados y no supervisados radica en el planteamiento del problema.
+
+En modelos supervisados, tienes dos tipos de variables al mismo tiempo:
+
+1. Una variable objetivo, que también se conoce como variable dependiente o variable y.
+2. Variables independientes, que también se conocen como variables x o variables explicativas.
+
+La variable objetivo es la variable que deseas predecir. Depende de las variables independientes y no es algo que conozcas de antemano. Las variables independientes son variables que conoces de antemano. Puedes introducirlas en una ecuación para predecir la variable objetivo. De esta manera, es relativamente similar al caso de y = ax + b.
+
+En el gráfico, la variable objetivo es la forma del punto de datos y las variables independientes son la altura y el ancho. Puedes ver la idea detrás del aprendizaje supervisado en el siguiente gráfico:
+
+![aprendizaje sup](https://github.com/boresmol/boresmol.github.io/blob/master/images/knn_02_MLsupervised_wide.aa50e6348ca4.png?raw=true)
+
+En este gráfico, los puntos de datos tienen cada uno una altura, un ancho y una forma. Hay cruces, estrellas y triángulos. A la derecha hay una regla de decisión que un modelo de aprendizaje automático podría haber aprendido.
+
+En este caso, las observaciones marcadas con una cruz son altas pero no anchas. Las estrellas son tanto altas como anchas. Los triángulos son bajos pero pueden ser anchos o estrechos. Básicamente, el modelo ha aprendido una regla de decisión para determinar si una observación es más probable que sea una cruz, una estrella o un triángulo basándose únicamente en su altura y ancho.
+
+En los modelos no supervisados, no hay una división entre variables objetivo y variables independientes. El aprendizaje no supervisado intenta agrupar los puntos de datos evaluando su similitud.
+
+Como se puede ver en el ejemplo, nunca se puede estar seguro de que los puntos de datos agrupados pertenezcan fundamentalmente juntos, pero siempre y cuando el agrupamiento tenga sentido, puede ser muy valioso en la práctica. Puedes ver la idea detrás del aprendizaje no supervisado en el siguiente gráfico:
+
+![knn unsupervised](https://github.com/boresmol/boresmol.github.io/blob/master/images/knn_03_MLunsupervised_wide.a6fd142b42de.png?raw=true)
+
+En este gráfico, las observaciones ya no tienen formas diferentes. Todas son círculos. Sin embargo, aún se pueden agrupar en tres grupos basados en la distancia entre los puntos. En este ejemplo particular, hay tres grupos de puntos que se pueden separar según el espacio vacío entre ellos.
+
+El algoritmo kNN es un modelo de aprendizaje automático supervisado. Esto significa que predice una variable objetivo utilizando una o varias variables independientes.
+
+## kNN es un algoritmo de aprendizaje no lineal.
+Una segunda propiedad que marca una gran diferencia en los algoritmos de aprendizaje automático es si los modelos pueden estimar relaciones no lineales.
+
+Los modelos lineales son aquellos que predicen utilizando líneas o hiperplanos. En la imagen, el modelo se representa como una línea dibujada entre los puntos. El modelo y = ax + b es el ejemplo clásico de un modelo lineal. Puedes ver cómo un modelo lineal podría ajustarse a los datos de ejemplo en el siguiente esquema:
+
+![lineal model](https://github.com/boresmol/boresmol.github.io/blob/master/images/modelo_lineal.jpg?raw=true)
+
+En esta imagen, los puntos de datos se representan a la izquierda con estrellas, triángulos y cruces. A la derecha hay un modelo lineal que puede separar los triángulos de los que no son triángulos. La decisión es una línea. Cada punto por encima de la línea es un no triángulo, y todo lo que está por debajo de la línea es un triángulo.
+
+Si quisieras agregar otra variable independiente al gráfico anterior, necesitarías representarla como una dimensión adicional, creando así un cubo con las formas en su interior. Sin embargo, una línea no podría cortar un cubo en dos partes. El equivalente multidimensional de la línea es el hiperplano. Por lo tanto, un modelo lineal se representa mediante un hiperplano, que en el caso del espacio bidimensional resulta ser una línea.
+
+Los modelos no lineales son aquellos que utilizan cualquier enfoque que no sea una línea para separar sus casos. Un ejemplo conocido es el árbol de decisiones, que básicamente es una larga lista de declaraciones if ... else. En el gráfico no lineal, las declaraciones if ... else te permitirían dibujar cuadrados u cualquier otra forma que quisieras dibujar. El siguiente gráfico representa un modelo no lineal aplicado a los datos de ejemplo:
+
+![no lineal](https://github.com/boresmol/boresmol.github.io/blob/master/images/no_lineal.jpg?raw=true)
+
+Este gráfico muestra cómo una decisión puede ser no lineal. La regla de decisión está compuesta por tres cuadrados. La caja en la que cae un nuevo punto de datos definirá su forma predicha. Observa que no es posible ajustar esto de una vez usando una línea: se necesitan dos líneas. Este modelo podría ser recreado con declaraciones if ... else de la siguiente manera:
+
+1. Si la altura del punto de datos es baja, entonces es un triángulo.
+2. De lo contrario, si el ancho del punto de datos es bajo, entonces es una cruz.
+3. De lo contrario, si ninguna de las condiciones anteriores es verdadera, entonces es una estrella.
+
+kNN es un ejemplo de un modelo no lineal. Más adelante en este tutorial, volveremos a la forma exacta en que se calcula el modelo.
+
+##  kNN es un algoritmo supervisado tanto para clasificación como para regresión.
+Los algoritmos de aprendizaje automático supervisado se pueden dividir en dos grupos según el tipo de variable objetivo que pueden predecir:
+
+1. La clasificación es una tarea de predicción con una variable objetivo categórica. Los modelos de clasificación aprenden a clasificar cualquier nueva observación. Esta clase asignada puede ser correcta o incorrecta, no hay un punto intermedio. Un ejemplo clásico de clasificación es el conjunto de datos de iris, en el cual se utilizan medidas físicas de plantas para predecir su especie. Un famoso algoritmo que se puede utilizar para la clasificación es la regresión logística.
+
+2. La regresión es una tarea de predicción en la cual la variable objetivo es numérica. Un ejemplo famoso de regresión es el desafío de precios de viviendas en Kaggle. En este concurso de aprendizaje automático, los participantes intentan predecir los precios de venta de casas basándose en numerosas variables independientes.
+
+En el siguiente gráfico, puedes ver cómo se vería una regresión y una clasificación utilizando el ejemplo anterior:
+
+![regvsclas](https://github.com/boresmol/boresmol.github.io/blob/master/images/knn_06_MLclassificationregression.6029d11323aa.png?raw=true)
+
+La parte izquierda de esta imagen es una clasificación. La variable objetivo es la forma de la observación, que es una variable categórica. La parte derecha es una regresión. La variable objetivo es numérica. Las reglas de decisión podrían ser exactamente las mismas para ambos ejemplos, pero sus interpretaciones son diferentes.
+
+Para una única predicción, las clasificaciones son correctas o incorrectas, mientras que las regresiones tienen un error en una escala continua. Tener una medida de error numérica es más práctico, por lo que muchos modelos de clasificación predicen no solo la clase, sino también la probabilidad de pertenecer a una de las clases.
+
+Algunos modelos solo pueden hacer regresión, otros solo pueden hacer clasificación, y algunos pueden hacer ambas. El algoritmo kNN se adapta sin problemas tanto a la clasificación como a la regresión.
+
+## Desventajas de kNN
+La verdadera limitación de kNN es su capacidad para adaptarse a relaciones altamente complejas entre variables independientes y dependientes. Es menos probable que kNN tenga un buen rendimiento en tareas avanzadas como visión por computadora y procesamiento del lenguaje natural.
+
+Puedes intentar mejorar el rendimiento de kNN tanto como sea posible, potencialmente agregando otras técnicas de aprendizaje automático. En la última parte del tutorial, verás una técnica llamada bagging, que es una forma de mejorar el rendimiento predictivo. Sin embargo, llegado a un cierto nivel de complejidad, es probable que kNN sea menos efectivo que otros modelos, independientemente de cómo se haya ajustado.
+
+## Usar kNN para predecir la edad de las babosas de mar
+Para seguir con la parte de codificación, usaremos un conjunto de datos de ejemplo para el resto de este tutorial: el conjunto de datos de abulones (Abalone Dataset). Este conjunto de datos contiene mediciones de edad de una gran cantidad de abulones.
+
+## El enunciado del problema de los abulones
+La edad de un abulón se puede determinar cortando su concha y contando el número de anillos en la misma. En el conjunto de datos de abulones (Abalone Dataset), puedes encontrar las mediciones de edad de una gran cantidad de abulones junto con muchas otras mediciones físicas.
+
+El objetivo del proyecto es desarrollar un modelo que pueda predecir la edad de un abulón basándose únicamente en las otras mediciones físicas. Esto permitiría a los investigadores estimar la edad del abulón sin tener que cortar su concha y contar los anillos.
+
+Aplicarás el algoritmo kNN para encontrar la predicción más cercana posible.
+
+## Importar el conjunto de datos de abulones
+En este tutorial, trabajaremos con el conjunto de datos de abulones (Abalone Dataset). Podrías descargarlo y usar pandas para importar los datos a Python, pero es aún más rápido dejar que pandas importe los datos directamente por ti.
+
+
+Puedes importar los datos utilizando pandas de la siguiente manera:
+
+```python3
+import pandas as pd
+url = ("https://archive.ics.uci.edu/ml/machine-learning-databases""/abalone/abalone.data")
+abalone = pd.read_csv(url, header=None)
+```
+Vamos a procesar un poco el dataset:
+
+```python3
+abalone.columns = [
+"Sex",
+"Length",
+"Diameter",
+"Height",
+"Whole weight",
+"Shucked weight",
+"Viscera weight",
+"Shell weight",
+"Rings"
+]
+
+abalone = abalone.drop("Sex", axis=1)
+```
+
+Eliminamos la variable sexo ya que el objetivo es predecir la edad mediante variables puramente físicas y consideramos que esta variable no cumple la condición. 
+
+## Un kNN paso a paso desde cero en Python
+En esta parte del tutorial, descubrirás cómo funciona el algoritmo kNN en profundidad. El algoritmo tiene dos componentes matemáticos principales que deberás entender. Para comenzar, realizarás un recorrido en lenguaje sencillo del algoritmo kNN.
+
+## Recorrido en lenguaje sencillo del algoritmo kNN
+El algoritmo kNN es un poco atípico en comparación con otros algoritmos de aprendizaje automático. Como viste anteriormente, cada modelo de aprendizaje automático tiene su fórmula específica que debe ser estimada. Lo particular del algoritmo de los vecinos más cercanos (kNN) es que esta fórmula se calcula no en el momento de ajustar el modelo, sino en el momento de hacer una predicción. Esto no es así para la mayoría de los otros modelos.
+
+Cuando llega un nuevo punto de datos, el algoritmo kNN, como su nombre indica, comienza encontrando los vecinos más cercanos de este nuevo punto de datos. Luego, toma los valores de esos vecinos y los utiliza como predicción para el nuevo punto de datos.
+
+Como ejemplo intuitivo de por qué esto funciona, piensa en tus vecinos. Tus vecinos suelen ser relativamente similares a ti. Probablemente estén en la misma clase socioeconómica que tú. Tal vez tengan el mismo tipo de trabajo que tú, tal vez sus hijos vayan a la misma escuela que los tuyos, y así sucesivamente. Pero para algunas tareas, este enfoque no es tan útil. Por ejemplo, no tendría sentido mirar el color favorito de tu vecino para predecir el tuyo.
+
+El algoritmo kNN se basa en la noción de que puedes predecir las características de un punto de datos basándote en las características de sus vecinos. En algunos casos, este método de predicción puede tener éxito, mientras que en otros casos puede no tenerlo. A continuación, verás la descripción matemática de "más cercano" para los puntos de datos y los métodos para combinar múltiples vecinos en una sola predicción.
+
+## Define "Más cercano" utilizando una definición matemática de distancia
+Para encontrar los puntos de datos que están más cerca del punto que necesitas predecir, puedes utilizar una definición matemática de distancia llamada distancia euclidiana.
+
+Para llegar a esta definición, primero debes entender lo que se entiende por diferencia de dos vectores. Aquí tienes un ejemplo:
+
+![knn pitagoras](https://github.com/boresmol/boresmol.github.io/blob/master/images/knn_pitagoras.jpg?raw=true)
+
+En esta imagen, puedes ver dos puntos de datos: uno azul en (2,2) y otro verde en (4,4). Para calcular la distancia entre ellos, puedes empezar por sumar dos vectores. El vector a va desde el punto (4,2) hasta el punto (4,4), y el vector b va desde el punto (4,2) hasta el punto (2,2). Sus extremos están indicados por los puntos de colores. Observa que forman un ángulo de 90 grados.
+
+La diferencia entre estos vectores es el vector c, que va desde el extremo del vector a hasta el extremo del vector b. La longitud del vector c representa la distancia entre tus dos puntos de datos.
+
+La longitud de un vector se llama norma. La norma es un valor positivo que indica la magnitud del vector. Puedes calcular la norma de un vector utilizando la fórmula euclidiana:
+
+![formula euclid](https://github.com/boresmol/boresmol.github.io/blob/master/images/euclidean_distance.5b5fe10e9fa0.png?raw=true)
+
+En esta fórmula, la distancia se calcula tomando las diferencias al cuadrado en cada dimensión y luego tomando la raíz cuadrada de la suma de esos valores. En este caso, debes calcular la norma del vector diferencia c para obtener la distancia entre los puntos de datos.
+
+Ahora, para aplicar esto a tus datos, debes entender que tus puntos de datos son en realidad vectores. Luego, puedes calcular la distancia entre ellos calculando la norma del vector diferencia.
+
+Puedes hacer esto en Python utilizando `linalg.norm()` de NumPy. Aquí tienes un ejemplo:
+
+```python3
+
+a = np.array([2, 2])
+b = np.array([4, 4])
+np.linalg.norm(a - b)
+2.8284271247461903
+
+```
+
+En este bloque de código, defines tus puntos de datos como vectores. Luego, calculas `norm()` en la diferencia entre dos puntos de datos. De esta manera, obtienes directamente la distancia entre dos puntos multidimensionales. Aunque los puntos son multidimensionales, la distancia entre ellos sigue siendo un escalar, es decir, un único valor.
+
+## Encontrar los k vecinos más cercanos
+Ahora que tienes una forma de calcular la distancia desde cualquier punto a cualquier otro punto, puedes usar esto para encontrar los vecinos más cercanos a un punto en el que deseas hacer una predicción.
+
+Necesitas encontrar un número de vecinos, y ese número está dado por k. El valor mínimo de k es 1. Esto significa usar solo un vecino para la predicción. El valor máximo es el número de puntos de datos que tienes. Esto significa usar todos los vecinos. El valor de k es algo que el usuario define. Las herramientas de optimización pueden ayudarte con esto, como verás en la última parte de este tutorial.
+
+Ahora, para encontrar los vecinos más cercanos en NumPy, vuelve al conjunto de datos de abulones. Como has visto, necesitas definir distancias en los vectores de las variables independientes, por lo que primero debes convertir tu DataFrame de pandas en un arreglo de NumPy utilizando el atributo `.values`:
+
+```python3
+
+X = abalone.drop("Rings", axis=1)
+X = X.values
+y = abalone["Rings"]
+y = y.values
+
+```
+
+Este bloque de código genera dos objetos que ahora contienen tus datos: X e y. X son las variables independientes y y es la variable dependiente de tu modelo. Observa que usas una letra mayúscula para X pero una letra minúscula para y. Esto se hace comúnmente en el código de aprendizaje automático porque la notación matemática generalmente usa una letra mayúscula para las matrices y una letra minúscula para los vectores.
+
+Ahora puedes aplicar kNN con k = 3 en un nuevo abulón que tiene las siguientes mediciones físicas:
+
+| Variable        | Value     |
+|-----------------|-----------|
+| Length          | 0.569552  |
+| Diameter        | 0.446407  |
+| Height          | 0.154437  |
+| Whole weight    | 1.016849  |
+| Shucked weight  | 0.439051  |
+| Viscera weight  | 0.222526  |
+| Shell weight    | 0.291208  |
+
+
