@@ -223,4 +223,18 @@ Ahora puedes aplicar kNN con k = 3 en un nuevo abulón que tiene las siguientes 
 | Viscera weight  | 0.222526  |
 | Shell weight    | 0.291208  |
 
+Puedes crear este individuo en python de la siguiente forma:
 
+```python3
+
+new_data_point = np.array([
+0.569552,
+0.446407,
+0.154437,
+1.016849,
+0.439051,
+0.222526,
+0.291208,
+])
+
+```
