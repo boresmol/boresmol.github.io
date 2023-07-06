@@ -3,13 +3,13 @@
 #
 
 # Name of your site (displayed in the header)
-name: Your Name
+name: Borja Esteve
 
 # Short bio or description (displayed in the header)
-description: Web Developer from Somewhere
+description: ¡Bienvenidos a mi blog de Ciencia de Datos! Soy Borja Esteve, graduado en Ciencia de Datos y apasionado investigador en algoritmos de Inteligencia Artificial, especialmente en el emocionante campo de la Visión por Computador. En este espacio, compartiré mi conocimiento y experiencia para desmitificar la Ciencia de Datos y acercarla a todos de manera práctica. Aprenderemos juntos conceptos fundamentales y complejos, desde técnicas de preprocesamiento de datos hasta modelos de Machine Learning avanzados. Pero no solo eso, también te brindaré ejemplos de código que te permitirán comprender y aplicar estos conceptos en la práctica. ¡Acompáñame en este emocionante viaje de descubrimiento y mejora tus habilidades en Ciencia de Datos! Puedes encontrar más sobre mi en: https://www.linkedin.com/in/borja-esteve-data-scientist/
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
-avatar: https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png
+avatar: https://avatars.githubusercontent.com/u/77378257?v=4
 
 #
 # Flags below are optional
@@ -18,12 +18,12 @@ avatar: https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/je
 # Includes an icon in the footer for each username you enter
 footer-links:
   dribbble:
-  email:
+  email: algirosfs6@gmail.com
   facebook:
   flickr:
-  github: barryclark/jekyll-now
+  github: https://github.com/boresmol
   instagram:
-  linkedin:
+  linkedin: https://www.linkedin.com/in/borja-esteve-data-scientist/
   pinterest:
   rss: # just type anything here for a working RSS icon
   twitter: jekyllrb
