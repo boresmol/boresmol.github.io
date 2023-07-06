@@ -13,6 +13,7 @@ title: The k-Nearest Neighbors (kNN)
 2. Explicación de kNN
 3. Código 'from scratch'
 4. Código con 'scikit-learn'
+5. Conclusiones
 
 # Idea Intuitiva
 
@@ -149,10 +150,10 @@ abalone = abalone.drop("Sex", axis=1)
 
 Eliminamos la variable sexo ya que el objetivo es predecir la edad mediante variables puramente físicas y consideramos que esta variable no cumple la condición. 
 
-## Un kNN paso a paso desde cero en Python
+# Un kNN paso a paso desde cero en Python
 En esta parte del tutorial, descubrirás cómo funciona el algoritmo kNN en profundidad. El algoritmo tiene dos componentes matemáticos principales que deberás entender. Para comenzar, realizarás un recorrido en lenguaje sencillo del algoritmo kNN.
 
-### Recorrido en lenguaje sencillo del algoritmo kNN
+## Recorrido en lenguaje sencillo del algoritmo kNN
 El algoritmo kNN es un poco atípico en comparación con otros algoritmos de aprendizaje automático. Como viste anteriormente, cada modelo de aprendizaje automático tiene su fórmula específica que debe ser estimada. Lo particular del algoritmo de los vecinos más cercanos (kNN) es que esta fórmula se calcula no en el momento de ajustar el modelo, sino en el momento de hacer una predicción. Esto no es así para la mayoría de los otros modelos.
 
 Cuando llega un nuevo punto de datos, el algoritmo kNN, como su nombre indica, comienza encontrando los vecinos más cercanos de este nuevo punto de datos. Luego, toma los valores de esos vecinos y los utiliza como predicción para el nuevo punto de datos.
@@ -161,7 +162,7 @@ Como ejemplo intuitivo de por qué esto funciona, piensa en tus vecinos. Tus vec
 
 El algoritmo kNN se basa en la noción de que puedes predecir las características de un punto de datos basándote en las características de sus vecinos. En algunos casos, este método de predicción puede tener éxito, mientras que en otros casos puede no tenerlo. A continuación, verás la descripción matemática de "más cercano" para los puntos de datos y los métodos para combinar múltiples vecinos en una sola predicción.
 
-### Define "Más cercano" utilizando una definición matemática de distancia
+## Define "Más cercano" utilizando una definición matemática de distancia
 Para encontrar los puntos de datos que están más cerca del punto que necesitas predecir, puedes utilizar una definición matemática de distancia llamada distancia euclidiana.
 
 Para llegar a esta definición, primero debes entender lo que se entiende por diferencia de dos vectores. Aquí tienes un ejemplo:
@@ -193,7 +194,7 @@ np.linalg.norm(a - b)
 
 En este bloque de código, defines tus puntos de datos como vectores. Luego, calculas `norm()` en la diferencia entre dos puntos de datos. De esta manera, obtienes directamente la distancia entre dos puntos multidimensionales. Aunque los puntos son multidimensionales, la distancia entre ellos sigue siendo un escalar, es decir, un único valor.
 
-### Encontrar los k vecinos más cercanos
+## Encontrar los k vecinos más cercanos
 Ahora que tienes una forma de calcular la distancia desde cualquier punto a cualquier otro punto, puedes usar esto para encontrar los vecinos más cercanos a un punto en el que deseas hacer una predicción.
 
 Necesitas encontrar un número de vecinos, y ese número está dado por k. El valor mínimo de k es 1. Esto significa usar solo un vecino para la predicción. El valor máximo es el número de puntos de datos que tienes. Esto significa usar todos los vecinos. El valor de k es algo que el usuario define. Las herramientas de optimización pueden ayudarte con esto, como verás en la última parte de este tutorial.
@@ -275,7 +276,7 @@ array([ 9, 11, 10])
 
 Ahora que tienes los valores de esos tres vecinos, los combinarás en una predicción para tu nuevo punto de datos. La forma de combinar los vecinos en una predicción varía según si se trata de regresión o clasificación.
 
-### Promedio para Regresión
+## Promedio para Regresión
 En problemas de regresión, la variable objetivo es numérica. Combinas varios vecinos en una sola predicción tomando el promedio de sus valores de la variable objetivo. Puedes hacerlo de la siguiente manera:
 
 ```python3
@@ -286,7 +287,7 @@ prediction = nearest_neighbor_rings.mean()
 
 Obtendrás un valor de 10 para la predicción. Esto significa que la predicción de los 3 vecinos más cercanos para tu nuevo punto de datos es 10. Puedes hacer lo mismo para cualquier cantidad de nuevos abulones que desees.
 
-### Moda para Clasificación
+## Moda para Clasificación
 En problemas de clasificación, la variable objetivo es categórica. Como se discutió anteriormente, no puedes calcular promedios en variables categóricas. Por ejemplo, ¿cuál sería el promedio de tres marcas de automóviles predichas? Sería imposible decirlo. No se puede aplicar un promedio en predicciones de clase.
 
 En cambio, en el caso de la clasificación, se utiliza la moda. La moda es el valor que ocurre con mayor frecuencia. Esto significa que cuentas las clases de todos los vecinos y retienes la clase más común. La predicción es el valor que ocurre con mayor frecuencia entre los vecinos.
@@ -306,11 +307,11 @@ ModeResult(mode=array('B', dtype='<U1'), count=array([2]))
 
 Como puedes ver, la moda en este ejemplo es "B" porque es el valor que aparece con mayor frecuencia en los datos de entrada
 
-## Ajustar kNN en Python utilizando scikit-learn
+# Ajustar kNN en Python utilizando scikit-learn
 
 Si bien programar un algoritmo desde cero es excelente para fines de aprendizaje, generalmente no es muy práctico cuando se trabaja en una tarea de aprendizaje automático. En esta sección, explorarás la implementación del algoritmo kNN utilizado en scikit-learn, una de las bibliotecas más completas de aprendizaje automático en Python.
 
-### División de los datos en conjuntos de entrenamiento y prueba para la evaluación del modelo
+## División de los datos en conjuntos de entrenamiento y prueba para la evaluación del modelo
 
 En esta sección, evaluarás la calidad de tu modelo kNN de abalones. En las secciones anteriores, te has centrado en aspectos técnicos, pero ahora adoptarás un enfoque más pragmático y orientado a los resultados.
 
@@ -335,7 +336,7 @@ El parámetro test_size se refiere al número de observaciones que deseas asigna
 
 En el código anterior, separas los datos en conjuntos de entrenamiento y prueba. Esto es necesario para la evaluación objetiva del modelo. Ahora puedes proceder a ajustar un modelo kNN en los datos de entrenamiento utilizando scikit-learn.
 
-### Ajustando una Regresión kNN en scikit-learn para el conjunto de datos de Abalone
+## Ajustando una Regresión kNN en scikit-learn para el conjunto de datos de Abalone
 
 Para ajustar un modelo con scikit-learn, comienzas creando un modelo de la clase correcta. En este punto, también necesitas elegir los valores para tus hiperparámetros. Para el algoritmo kNN, debes elegir el valor de k, que se llama `n_neighbors` en la implementación de scikit-learn. Así es como puedes hacerlo en Python:
 
@@ -356,7 +357,7 @@ knn_model.fit(X_train, y_train)
 
 Usando el método `.fit()`, permites que el modelo aprenda de los datos. En este punto, knn_model contiene todo lo necesario para hacer predicciones sobre nuevos puntos de datos de abalones. ¡Ese es todo el código que necesitas para ajustar una regresión kNN usando Python!
 
-### Usando scikit-learn para inspeccionar el ajuste del modelo
+## Usando scikit-learn para inspeccionar el ajuste del modelo
 
 Ajustar un modelo, sin embargo, no es suficiente. En esta sección, verás algunas funciones que puedes utilizar para evaluar el ajuste.
 
@@ -399,7 +400,7 @@ Hasta ahora, solo has utilizado el algoritmo kNN de scikit-learn tal como está.
 
 Esto no es motivo de preocupación en este momento. En la próxima parte, verás cómo optimizar el error de predicción o error de prueba utilizando varios métodos de ajuste.
 
-### Visualización del ajuste de tu modelo
+## Visualización del ajuste de tu modelo
 
 Antes de comenzar a mejorar el modelo, es importante analizar el ajuste real del mismo. Para comprender lo que el modelo ha aprendido, puedes visualizar cómo se han realizado las predicciones utilizando Matplotlib. Aquí tienes un ejemplo de cómo hacerlo:
 
@@ -430,11 +431,11 @@ En este gráfico, cada punto representa un abalón del conjunto de prueba, con s
 
 Esta visualización es una vista bidimensional de un conjunto de datos de siete dimensiones. Si experimentas con ellas, te dará una gran comprensión de lo que el modelo está aprendiendo y, tal vez, de lo que no está aprendiendo o está aprendiendo incorrectamente.
 
-### Ajustar y optimizar kNN en Python utilizando scikit-learn
+## Ajustar y optimizar kNN en Python utilizando scikit-learn
 
 Existen numerosas formas de mejorar tu puntuación predictiva. Algunas mejoras se pueden lograr trabajando con los datos de entrada mediante técnicas de manipulación de datos, pero en este tutorial, nos enfocaremos en el algoritmo kNN. A continuación, veremos cómo mejorar la parte del algoritmo en el proceso de modelado.
 
-#### Mejorando el rendimiento de kNN en scikit-learn utilizando GridSearchCV
+## Mejorando el rendimiento de kNN en scikit-learn utilizando GridSearchCV
 
 Hasta ahora, siempre hemos trabajado con k=3 en el algoritmo kNN, pero el mejor valor para k es algo que debes encontrar empíricamente para cada conjunto de datos.
 
@@ -493,7 +494,7 @@ test_rmse
 
 Con este código, ajustas el modelo en los datos de entrenamiento y evalúas los datos de prueba. Puedes ver que el error de entrenamiento es peor que antes, pero el error de prueba es mejor que antes. Esto significa que tu modelo se ajusta de manera menos cercana a los datos de entrenamiento. El uso de GridSearchCV para encontrar un valor para k ha reducido el problema de sobreajuste en los datos de entrenamiento.
 
-### Añadiendo el promedio ponderado de vecinos basado en la distancia
+## Añadiendo el promedio ponderado de vecinos basado en la distancia
 
 Utilizando GridSearchCV, lograste reducir el RMSE de prueba de 2.37 a 2.17. En esta sección, verás cómo mejorar aún más el rendimiento.
 
@@ -520,7 +521,7 @@ test_rmse
 
 Aquí, pruebas si tiene sentido utilizar un peso diferente utilizando tu GridSearchCV. Al aplicar un promedio ponderado en lugar de un promedio regular, has reducido el error de predicción de 2.17 a 2.1634. Aunque no es una mejora enorme, sigue siendo mejor, lo que lo hace valioso
 
-### Mejora usando Bagging
+## Mejora usando Bagging
 
 
 Para mejorar aún más el ajuste de kNN en scikit-learn, puedes utilizar el método de Bagging como tercer paso. Bagging es un método de conjunto, o un método que toma un modelo de aprendizaje automático relativamente sencillo y ajusta una gran cantidad de esos modelos con ligeras variaciones en cada ajuste. Bagging a menudo utiliza árboles de decisión, pero kNN también funciona perfectamente.
@@ -571,7 +572,7 @@ En esta tabla, se muestran los cuatro modelos desde el más simple hasta el más
 
 Es posible que se puedan lograr más mejoras en las predicciones de los abalones. Por ejemplo, sería posible buscar formas de manipular los datos de manera diferente o encontrar otras fuentes de datos externas.
 
-## Conclusión
+# Conclusión
 Ahora que conoces todo sobre el algoritmo kNN, estás listo para comenzar a construir modelos predictivos eficientes en Python. Se necesitan algunos pasos para pasar de un modelo básico de kNN a un modelo completamente ajustado, ¡pero el aumento en el rendimiento lo vale completamente!
 
 En este tutorial aprendiste cómo:
