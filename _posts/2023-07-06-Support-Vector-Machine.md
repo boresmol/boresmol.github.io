@@ -207,4 +207,164 @@ svm.fit(data=data_dict)
 svm.visualize()
 ```
 
+![Resultado script](https://github.com/boresmol/boresmol.github.io/blob/master/images/descargar.png?raw=true)
+
+Como vemos, este es un ejemplo muy simple. 3 puntos en cada clase perfectamente separables por una recta. Tristemente, los datos reales suelen ser de naturaleza no lineal, por lo que el algoritmo descrito e implementado anteriormente no nos sirve para separar clases. Para solucionar este problema, tenemos que hacer uso de lo que se conoce como 'kernel trick' que explicaremos a continuación.
+
+# SVM para datos no lineales. El kernel trick.
+
+En casos donde los datos no pueden ser separados perfectamente por un hiperplano lineal, se utiliza una técnica llamada "kernel trick". Esta técnica permite mapear los datos a un espacio de características de mayor dimensión donde los objetos se pueden separar de manera lineal. Se introduce una función de kernel que realiza la transformación de los datos. El kernel más utilizado es el kernel radial, pero, ¿qué es esto del kernel?
+
+## El kernel en SVM
+
+## Funciones de Kernel en SVM
+
+Las funciones de kernel son una herramienta muy poderosa para explorar espacios de alta dimensión. Nos permiten realizar discriminantes lineales en variedades no lineales, lo que puede llevar a una mayor precisión y robustez que los modelos lineales tradicionales por sí solos.
+
+La función de kernel es simplemente una función matemática que convierte un espacio de entrada de baja dimensión en un espacio de dimensión superior. Esto se logra mediante la asignación de los datos a un nuevo espacio de características. En este espacio, los datos serán linealmente separables. Esto significa que se puede utilizar una máquina de vectores de soporte para encontrar un hiperplano que separe los datos.
+
+Por ejemplo, si la entrada 𝑥 es bidimensional, la función de kernel la mapeará a un espacio tridimensional. En este espacio, los datos serán linealmente separables.
+
+![Mapeo kernel](https://github.com/boresmol/boresmol.github.io/blob/master/images/descargar%20(1).png?raw=true)
+
+Además, las funciones de kernel proporcionan más características que otros algoritmos como redes neuronales o conjuntos de árboles en algunos tipos de problemas que involucran reconocimiento de escritura a mano, detección de caras, etc., porque extraen propiedades intrínsecas de los puntos de datos a través de una función de kernel.
+
+## El kernel radial
+
+RBF, que significa Función de Base Radial (por sus siglas en inglés, Radial Basis Function), es un kernel muy poderoso utilizado en SVM. A diferencia de los kernels lineales o polinómicos, RBF es más complejo y eficiente al mismo tiempo, ya que puede combinar múltiples kernels polinómicos de diferentes grados varias veces para proyectar los datos no linealmente separables en un espacio de dimensionalidad superior, de modo que puedan ser separables utilizando un hiperplano.
+
+![no lineal](https://github.com/boresmol/boresmol.github.io/blob/master/images/descargar%20(2).png?raw=true)
+
+El kernel RBF funciona mapeando los datos a un espacio de alta dimensión mediante la búsqueda de los productos escalares y los cuadrados de todas las características en el conjunto de datos, y luego realizando la clasificación utilizando la idea básica del SVM lineal. Para proyectar los datos en un espacio de dimensionalidad superior, el kernel RBF utiliza la llamada función de base radial, que puede escribirse como:
+
+![formula1](https://github.com/boresmol/boresmol.github.io/blob/master/images/formula1.png?raw=true)
+
+Aquí, `||X1 - X2||^2` se conoce como la Distancia Euclidiana al Cuadrado y `σ` es un parámetro libre que se puede utilizar para ajustar la ecuación.
+
+Cuando se introduce un nuevo parámetro `ℽ = 1 / (2σ^2)`, la ecuación será:
+
+![formula2](https://github.com/boresmol/boresmol.github.io/blob/master/images/formula2.png?raw=true)
+
+La ecuación es realmente simple : la Distancia Euclidiana al Cuadrado se multiplica por el parámetro gamma y luego se encuentra el exponente de todo el resultado. Esta ecuación puede encontrar los productos internos transformados para mapear los datos a dimensiones superiores directamente sin necesidad de transformar todo el conjunto de datos, lo que conduce a una ineficiencia. Y es por esto que se conoce como la función de kernel RBF (Radial Basis Function).
+
+La gráfica de distribución del RBF Kernel se verá así:
+
+![distribucion](https://github.com/boresmol/boresmol.github.io/blob/master/images/distribucion.png?raw=true)
+
+Como puedes ver, la gráfica de distribución del RBF kernel se asemeja a la curva de la distribución gaussiana, que es conocida como una curva en forma de campana. Por lo tanto, el kernel RBF también se conoce como el kernel de base radial gaussiana.
+
+El kernel RBF se utiliza de manera muy popular con algoritmos como K-Nearest Neighbors (K-Vecinos más Cercanos) y Support Vector Machines (Máquinas de Vectores de Soporte).
+
+Por último, esta visualización final resume muy bien todo lo explicado en esta sección del post:
+
+![kernel](https://github.com/boresmol/boresmol.github.io/blob/master/images/kernel.png?raw=true)
+
+# Comparación de algoritmos
+
+A continuación vamos a hacer una pequeña experimentación para acabar de entender la importancia del kernel trick en datos no lineales:
+
+1. Generaremos un conjunto de datos artificial no lineal de dos clases
+2. Crearemos un SVM Lineal para tratar de separar las clases
+3. Usaremos el kernel trick para tratar de separar las clases
+4. Compararemos el rendimiento
+
+```python3
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.datasets import make_circles
+
+X, y = make_circles(n_samples=500, noise=0.06, random_state=42)
+
+df = pd.DataFrame(dict(x1=X[:, 0], x2=X[:, 1], y=y))
+
+```
+
+```python3
+
+colors = {0:'blue', 1:'yellow'}
+fig, ax = plt.subplots()
+grouped = df.groupby('y')
+for key, group in grouped:
+    group.plot(ax=ax, kind='scatter', x='x1', y='x2', label=key, color = colors[key])
+plt.show()
+```
+
+![Resultado codigo](https://github.com/boresmol/boresmol.github.io/blob/master/images/resultado_codigo.png?raw=true)
+
+```python3
+
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
+
+clf = SVC(kernel="linear")
+
+clf.fit(X, y)
+
+pred = clf.predict(X)
+
+print("El accuracy del modelo lineal es: ",accuracy_score(pred, y))
+```
+**El accuracy del modelo lineal es: 0.496**
+
+```python3
+
+# Definimos el kernel radial con la fórmula antes explicada
+
+def RBF(X, gamma):
+
+    # Free parameter gamma
+    if gamma == None:
+        gamma = 1.0/X.shape[1]
+
+    # RBF kernel Equation
+    K = np.exp(-gamma * np.sum((X - X[:,np.newaxis])**2, axis = -1))
+
+    return K
+
+```
+
+```python3
+# Aplicamos el kernel al dataset
+
+X = RBF(X, gamma=None)
+```
+
+```python3
+# Alicamos el kernel lineal a un dataset al que se le ha aplicado el kernel trick
+
+clf = SVC(kernel="linear")
+
+clf.fit(X, y)
+
+pred = clf.predict(X)
+
+print("El accuracy del SVM con kernel radial es: ",accuracy_score(pred, y))
+```
+**El accuracy del SVM con kernel radial es:  0.94**
+
+
+Como podemos ver, el accuracy del SVM con kernel radial es significativamente mayor al SVM lineal simple, lo que demuestra la suma importancia del kernel a la hora de enfrentarnos a datos no lineales.
+
+# Conclusiones
+SVM es un algoritmo de machine learning altamente efectivo y versátil. De hecho, aunque actualmente no es el estado del arte, ha sido muy utilizado durante décadas en el campo de la visión por computador, más concretamente en el reconocimiento de dígitos manuscritos y de rostros.
+
+Las ventajas de las máquinas de vectores de soporte son las siguientes:
+
+- Efectivas en espacios de alta dimensionalidad.
+- Siguen siendo efectivas en casos donde el número de dimensiones es mayor que el número de muestras.
+- Utilizan un subconjunto de puntos de entrenamiento en la función de decisión (llamados vectores de soporte), por lo que también son eficientes en memoria.
+- Versátiles: se pueden especificar diferentes funciones de kernel para la función de decisión. Se proporcionan kernels comunes, pero también es posible especificar kernels personalizados.
+
+Las desventajas de las máquinas de vectores de soporte incluyen:
+
+- Si el número de características es mucho mayor que el número de muestras, es crucial evitar el sobreajuste al elegir funciones de kernel y términos de regularización.
+- Las SVM no proporcionan directamente estimaciones de probabilidad. Estas se calculan utilizando una costosa validación cruzada de cinco pliegues (ver Puntuaciones y probabilidades).
+- Las Máquinas de Vectores de Soporte son herramientas poderosas, pero sus requisitos computacionales y de almacenamiento aumentan rápidamente con el número de vectores de entrenamiento. El núcleo de una SVM es un problema de programación cuadrática.
+
+
+Mencionar que existen versiones de [SVM para regresión](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html) como para [clasificación multiclase](https://scikit-learn.org/stable/modules/svm.html#classification)
+
+
 
